@@ -3,8 +3,17 @@ import pickle
 import re
 import string
 
-model = pickle.load(open('model.pkl', 'rb'))
-tfidf = pickle.load(open('tfidf.pkl', 'rb'))
+import pickle
+import requests
+import io
+
+
+model_url = 'https://github.com/parvathykrishna05/fake-news-streamlit-app/releases/download/v1.0/model.pkl'
+tfidf_url = 'https://github.com/parvathykrishna05/fake-news-streamlit-app/releases/download/v1.0/tfidf.pkl'
+
+model = pickle.load(io.BytesIO(requests.get(model_url).content))
+tfidf = pickle.load(io.BytesIO(requests.get(tfidf_url).content))
+
 
 def clean_text(text):
     text = text.lower()
