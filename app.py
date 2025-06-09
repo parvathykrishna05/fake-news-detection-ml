@@ -1,38 +1,44 @@
 import streamlit as st
 import pickle
-import requests
-import io
 import re
 import string
 
-model_url = 'https://raw.githubusercontent.com/parvathykrishna05/fake-news-detection-ml/refs/heads/main/model%20(1).pkl'
-tfidf_url = 'https://raw.githubusercontent.com/parvathykrishna05/fake-news-detection-ml/refs/heads/main/tfidf%20(1).pkl'
+# Load model and TF-IDF vectorizer
+with open("model.pkl", "rb") as model_file:
+    model = pickle.load(model_file)
 
-model = pickle.load(io.BytesIO(requests.get(model_url).content))
-tfidf = pickle.load(io.BytesIO(requests.get(tfidf_url).content))
+with open("tfidf.pkl", "rb") as tfidf_file:
+    tfidf = pickle.load(tfidf_file)
 
+# Text cleaning function
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'\[.*?\]', '', text)
     text = re.sub(r'\W', ' ', text)
     text = re.sub(r'https?://\S+|www\.\S+', '', text)
     text = re.sub(r'<.*?>+', '', text)
-    text = re.sub(f'[{re.escape(string.punctuation)}]', '', text)
+    text = re.sub(f"[{re.escape(string.punctuation)}]", '', text)
     text = re.sub(r'\n', '', text)
     text = re.sub(r'\w*\d\w*', '', text)
     return text
 
-st.title("📰 Fake News Detection")
-st.subheader("Enter news content to check its authenticity.")
+# Streamlit UI
+st.title("📰 Fake News Detection App")
+st.markdown("Enter a news headline or paragraph to check its authenticity using a machine learning model trained on real-world data.")
 
-input_text = st.text_area("News Text")
+# Input area
+input_text = st.text_area("🔍 Paste news content below:")
 
+# Predict button
 if st.button("Check"):
-    cleaned = clean_text(input_text)
-    vectorized = tfidf.transform([cleaned])
-    prediction = model.predict(vectorized)
-
-    if prediction[0] == 1:
-        st.success("✅ Real News")
+    if input_text.strip() == "":
+        st.warning("⚠️ Please enter some text.")
     else:
-        st.error("🚫 Fake News")
+        cleaned = clean_text(input_text)
+        vectorized = tfidf.transform([cleaned])
+        prediction = model.predict(vectorized)
+
+        if prediction[0] == 1:
+            st.success("✅ This looks like **Real News**.")
+        else:
+            st.error("🚫 This looks like **Fake News**.")
