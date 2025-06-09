@@ -2,33 +2,19 @@ import streamlit as st
 import pickle
 import re
 import string
-import requests
-import io
+import os
 
-model_url = 'https://github.com/parvathykrishna05/fake-news-detection-ml/releases/download/v1.o/model.1.pkl'
-tfidf_url = 'https://github.com/parvathykrishna05/fake-news-detection-ml/releases/download/v1.o/tfidf.1.pkl'
-
-# Function to load pickle files from URL
-def load_pickle_from_url(url, file_description):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            return pickle.load(io.BytesIO(response.content))
-        else:
-            st.error(f"Failed to download {file_description}. Status code: {response.status_code}")
-            return None
-    except Exception as e:
-        st.error(f"Error loading {file_description}: {str(e)}")
-        return None
-
-# Load model and vectorizer
-model = load_pickle_from_url(model_url, "model file")
-tfidf = load_pickle_from_url(tfidf_url, "TF-IDF vectorizer")
-
-# Stop if loading failed
-if model is None or tfidf is None:
+# Load model and vectorizer from local files
+try:
+    with open('model.1.pkl', 'rb') as file:
+        model = pickle.load(file)
+    with open('tfidf.1.pkl', 'rb') as file:
+        tfidf = pickle.load(file)
+except FileNotFoundError as e:
+    st.error(f"File not found: {str(e)}")
     st.stop()
 
+# Rest of the code remains the same
 def clean_text(text):
     text = text.lower()
     text = re.sub('\[.*?\]', '', text)
