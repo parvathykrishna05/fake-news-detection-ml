@@ -32,7 +32,6 @@ Output: Fake News
 
 ## 🎓 Built For
 - AICTE-Microsoft AI Azure Virtual Internship by Edunet Foundation
-- Jyothi Engineering College, AI & DS Dept
 
 ## ✨ Author
 - Parvathy Krishna  
