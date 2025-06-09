@@ -8,8 +8,8 @@ import requests
 import io
 
 
-model_url = 'https://github.com/parvathykrishna05/fake-news-streamlit-app/releases/download/v1.0/model.pkl'
-tfidf_url = 'https://github.com/parvathykrishna05/fake-news-streamlit-app/releases/download/v1.0/tfidf.pkl'
+model_url = 'https://github.com/parvathykrishna05/fake-news-detection-ml/releases/download/v1.o/model.1.pkl'
+tfidf_url = 'https://github.com/parvathykrishna05/fake-news-detection-ml/releases/download/v1.o/tfidf.1.pkl'
 
 model = pickle.load(io.BytesIO(requests.get(model_url).content))
 tfidf = pickle.load(io.BytesIO(requests.get(tfidf_url).content))
