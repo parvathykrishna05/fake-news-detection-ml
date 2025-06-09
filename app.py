@@ -3,8 +3,8 @@ import pickle
 import re
 import string
 
-model = pickle.load(open('model.pkl', 'rb'))
-tfidf = pickle.load(open('tfidf.pkl', 'rb'))
+model = pickle.load(open('model(1).pkl', 'rb'))
+tfidf = pickle.load(open('tfidf(1).pkl', 'rb'))
 
 def clean_text(text):
     text = text.lower()
