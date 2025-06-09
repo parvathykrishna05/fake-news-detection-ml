@@ -5,8 +5,8 @@ import io
 import re
 import string
 
-model_url = 'PASTE_RAW_MODEL_URL_HERE'
-tfidf_url = 'PASTE_RAW_TFIDF_URL_HERE'
+model_url = 'https://raw.githubusercontent.com/parvathykrishna05/fake-news-detection-ml/refs/heads/main/model%20(1).pkl'
+tfidf_url = 'https://raw.githubusercontent.com/parvathykrishna05/fake-news-detection-ml/refs/heads/main/tfidf%20(1).pkl'
 
 model = pickle.load(io.BytesIO(requests.get(model_url).content))
 tfidf = pickle.load(io.BytesIO(requests.get(tfidf_url).content))
