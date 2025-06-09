@@ -1,29 +1,25 @@
 import streamlit as st
 import pickle
+import requests
+import io
 import re
 import string
-import os
 
-# Load model and vectorizer from local files
-try:
-    with open('model.1.pkl', 'rb') as file:
-        model = pickle.load(file)
-    with open('tfidf.1.pkl', 'rb') as file:
-        tfidf = pickle.load(file)
-except FileNotFoundError as e:
-    st.error(f"File not found: {str(e)}")
-    st.stop()
+model_url = 'PASTE_RAW_MODEL_URL_HERE'
+tfidf_url = 'PASTE_RAW_TFIDF_URL_HERE'
 
-# Rest of the code remains the same
+model = pickle.load(io.BytesIO(requests.get(model_url).content))
+tfidf = pickle.load(io.BytesIO(requests.get(tfidf_url).content))
+
 def clean_text(text):
     text = text.lower()
-    text = re.sub('\[.*?\]', '', text)
-    text = re.sub('\\W', ' ', text)
-    text = re.sub('https?://\S+|www\.\S+', '', text)
-    text = re.sub('<.*?>+', '', text)
-    text = re.sub('[%s]' % re.escape(string.punctuation), '', text)
-    text = re.sub('\n', '', text)
-    text = re.sub('\w*\d\w*', '', text)
+    text = re.sub(r'\[.*?\]', '', text)
+    text = re.sub(r'\W', ' ', text)
+    text = re.sub(r'https?://\S+|www\.\S+', '', text)
+    text = re.sub(r'<.*?>+', '', text)
+    text = re.sub(f'[{re.escape(string.punctuation)}]', '', text)
+    text = re.sub(r'\n', '', text)
+    text = re.sub(r'\w*\d\w*', '', text)
     return text
 
 st.title("📰 Fake News Detection")
@@ -32,14 +28,11 @@ st.subheader("Enter news content to check its authenticity.")
 input_text = st.text_area("News Text")
 
 if st.button("Check"):
-    if input_text:
-        cleaned = clean_text(input_text)
-        vectorized = tfidf.transform([cleaned])
-        prediction = model.predict(vectorized)
+    cleaned = clean_text(input_text)
+    vectorized = tfidf.transform([cleaned])
+    prediction = model.predict(vectorized)
 
-        if prediction[0] == 1:
-            st.success("✅ Real News")
-        else:
-            st.error("🚫 Fake News")
+    if prediction[0] == 1:
+        st.success("✅ Real News")
     else:
-        st.warning("Please enter some text.")
+        st.error("🚫 Fake News")
